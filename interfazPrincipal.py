@@ -1,5 +1,6 @@
 import PySimpleGUI as sg
 from tema import tema
+import interfazCargaLibros
 
 import os 
 
@@ -7,7 +8,7 @@ import os
 def interfazInicial():
     
     layout= [
-        [sg.Button('Agregar Libro',font='Italic 20',size=(12,3),key='nuevoLibro'),
+        [sg.Button('Agregar Libro',font='Italic 20',size=(12,3),key='newBook'),
             sg.Button('Editar Libro',font='Italic 20',size=(12,3),key='editLibro'),
             sg.Button('Borrar Libro',font='Italic 20',size=(12,3),key='delLibro')]
     ]
@@ -25,6 +26,8 @@ def principal():
         evento, value = ventana.read()
         if (evento == None or evento == 'salir') :
             break
+        if (evento == 'newBook'):
+            interfazCargaLibros.inicioConsignas()
         
     ventana.Close()
 principal()
