@@ -30,7 +30,7 @@ def addBookView():
         [sg.InputText(default_text=0,font='Italic 10',key='newSaleValue',enable_events=True)],
         [sg.Text('Fecha Venta',font='Italic 10',key='saleDate')],
         [sg.InputText('',font='Italic 10',key='newSaleDate',do_not_clear=False)],
-        [sg.Text('Notas',font='Italic 10',key='notes')],
+        [sg.Text('Notas',font='Italic 10',key='notes')], 
         [sg.InputText(default_text='',font='Italic 10',key='newNotes')],
         [sg.Button('Agregar', font='Italic 8', size=(10, 2), key='addBook')]
         
