@@ -10,8 +10,12 @@ from views.stadisticsView import *
 from views.searchView import *
 from views.welcomeView import *
 from book import Book
+from models import create_schema, insert_book, get_books, update_book, delete_book_by_title
+from datetime import datetime
 
-
+# Obtener la fecha actual
+current_date = datetime.now()
+only_date = current_date.date()
 
 def validate_input(text):
     pattern = r'^[0-9]*$'
@@ -23,27 +27,48 @@ def validate_input(text):
 def validate_values(values):
     return validate_input(values['newSaleValue'])
 
-def addBook(aBook,values):
+def addBook(values):
     if validate_values(values):
-        book_values={'title':values['newTitle'],
-                 'author':values['newAuthor'],
-                 'subTitle':values['newSubTitle'],
-                 'photo':values['newTitle'],
-                 'percentage':values['newPercentage'],
-                 'notes':values['newNotes'],
-                 'purchaseDate':values['newPurchaseDate'],
-                 'saleDate':values['newSaleDate'],
-                 'count':values['newCount'],
-                 'editorial':values['newEditorial'],
-                 'supplier':values['newSupplier'],
-                 'category':values['newCategory'],
-                 'purchaseValue':values['newPurchaseValue'],
-                 'saleValue':values['newSaleValue'],
-                 'year':values['newYear']}
-        book = Book(book_values)
-        print (book)
+        book_values = {
+            'title': values['newTitle'],
+            'subTitle': values['newSubTitle'],
+            'author': values['newAuthor'],
+            'category': values['newCategory'],
+            'supplier': values['newSupplier'],
+            'purchaseValue': values['newPurchaseValue'],
+            'saleValue': values['newSaleValue'],
+            'editorial': values['newEditorial'],
+            'year': values['newYear'],
+            'count': values['newCount'],
+            'percentage': values['newPercentage'],
+            'notes': values['newNotes'],
+            'purchaseDate': only_date,
+            'saleDate': only_date,
+            'photo': 'VA UNA FOTO'
+        }
+        # Crear una instancia de Book
+        new_book = Book(book_values)
+        # Insertar el libro en la base de datos
+        insert_book(title=new_book.title, subtitle=new_book.subTitle, author=new_book.author,
+                    category=new_book.category, supplier=new_book.supplier,
+                    purchasevalue=new_book.purchaseValue, salevalue=new_book.saleValue,
+                    editorial=new_book.editorial, year=new_book.year, count=new_book.count,
+                    percentage=new_book.percentage, notes=new_book.notes,
+                    purchasedate=new_book.purchaseDate, saledate=new_book.saleDate,
+                    photo=new_book.photo)
+        sg.popup('Libro agregado correctamente.')
     else:
         sg.popup_error('Por favor, ingrese solo números.')
+
+def get_book(book_id=None, title=None, author=None, category=None):
+    """
+    Obtener libros de la base de datos basado en filtros opcionales.
+
+    """
+    # Llamar a la función get_books desde models.py con los filtros proporcionados
+    books = get_books(id=book_id, title=title, author=author, category=category)
+    return books
+
 
 def updateCenterView(window,event,activeView):
     window[activeView].update(visible=False)
@@ -95,7 +120,7 @@ def main():
             window[activeView].update(visible=False)
             window[f'CENTER-welcomeView'].update(visible=True)
         if event == 'addBook':
-            addBook(window,values)
+            addBook(values)
         if event in no_view_events:
             continue
         else :            

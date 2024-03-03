@@ -19,7 +19,7 @@ class Book(base):
     author = Column(String, nullable=False)
     category = Column(String, nullable=False)
     supplier = Column(String)
-    purchasevalue = Column(Float)
+    purchasevalue = Column(String)
     salevalue = Column(Float)
     editorial = Column(String)
     year = Column(Integer)
@@ -168,35 +168,6 @@ def delete_book_by_title(title):
 
 create_schema()
 
-insert_book(title="El Principito", author="Antoine de Saint-Exupéry", category="Fábula", year=1943)
-insert_book(title="Don Quijote de la Mancha", author="Miguel de Cervantes", category="Novela", year=1605)
+# drop_schema()
 
-# Obtener todos los libros
-books = get_books()
-print(books)
-
-# Obtener libros por título
-books_by_title = get_books(title="El Principito")
-print(books_by_title)
-
-# Obtener libros por autor
-books_by_author = get_books(author="Miguel de Cervantes")
-print(books_by_author)
-
-# Obtener libros por categoría
-books_by_category = get_books(category="Fábula")
-print(books_by_category)
-
-update_book(book_id=1, updated_values={"title": "El Principito (Edición Especial)"})
-
-delete_book_by_title(title="Don Quijote de la Mancha")
-
-# Intenta insertar un libro sin título, autor y categoría
-insert_book(title="", author="", category="")
-
-# Intenta actualizar un libro que no existe
-update_book(book_id=1000, updated_values={"title": "Libro Inexistente"})
-
-# Intenta eliminar un libro que no existe
-delete_book_by_title(title="Libro Inexistente")
 
