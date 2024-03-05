@@ -25,9 +25,23 @@ def validate_input(text):
     return True
 
 def validate_values(values):
-    return validate_input(values['newSaleValue'])
+    if validate_input(values['newSaleValue']) == False:
+        return False, 'Valor de Venta'
+    elif validate_input(values['newPercentage']) == False:
+        return False, 'Porcentaje'
+    elif validate_input(values['newCount']) == False:
+        return False, 'Cantidad'
+    elif validate_input(values['newPurchaseValue']) == False:
+        return False, 'Valor de Compra'
+    elif validate_input(values['newYear']) == False:
+        return False, 'Año'
+    else:
+        return True,'' 
 
 def addBook(values):
+    purchase_date = datetime.date.today()
+    rev_date=datetime.date(1917,11,7)
+    valid_values,tag =validate_values(values)
     if validate_values(values):
         book_values = {
             'title': values['newTitle'],
@@ -42,8 +56,8 @@ def addBook(values):
             'count': values['newCount'],
             'percentage': values['newPercentage'],
             'notes': values['newNotes'],
-            'purchaseDate': only_date,
-            'saleDate': only_date,
+            'purchaseDate': purchase_date,
+            'saleDate': rev_date,
             'photo': 'VA UNA FOTO'
         }
         # Crear una instancia de Book
@@ -58,7 +72,33 @@ def addBook(values):
                     photo=new_book.photo)
         sg.popup('Libro agregado correctamente.')
     else:
-        sg.popup_error('Por favor, ingrese solo números.')
+        sg.popup_error(f'El dato {tag} debe ser un número.')
+   
+def addBook(windows,values):
+    purchase_date = datetime.date.today()
+    rev_date=datetime.date(1917,11,7)
+    valid_values,tag =validate_values(values)
+    if valid_values:
+        book_values={'title':values['newTitle'],
+                 'author':values['newAuthor'],
+                 'subTitle':values['newSubTitle'],
+                 'photo':values['newTitle'],
+                 'percentage':values['newPercentage'],
+                 'notes':values['newNotes'],
+                 'purchaseDate':purchase_date,
+                 'saleDate':rev_date,
+                 'count':values['newCount'],
+                 'editorial':values['newEditorial'],
+                 'supplier':values['newSupplier'],
+                 'category':values['newCategory'],
+                 'purchaseValue':values['newPurchaseValue'],
+                 'saleValue':values['newSaleValue'],
+                 'year':values['newYear']}
+        book = Book(book_values)
+        print (book)
+>>>>>>> ik
+    else:
+        sg.popup_error(f'El dato {tag} debe ser un número.')
 
 def get_book(book_id=None, title=None, author=None, category=None):
     """
@@ -92,15 +132,15 @@ def initialView():
 # Definir el diseño de la ventana principal
     layout = [
     [
-        sg.Column(left_layout, element_justification='left',expand_y=True,expand_x=True),
-        sg.Column(welcomeView(), size=(800, 500), background_color='#222E50', key='CENTER-welcomeView',element_justification='center',expand_y=True,expand_x=True,visible=True),
-        sg.Column(addBookView(), size=(800, 500), background_color='#222E50', key='CENTER-addBookView',expand_y=True,expand_x=True,visible=False),
-        sg.Column(searchView(), size=(800, 500), background_color='#222E50', key='CENTER-searchView',expand_y=True,expand_x=True,visible=False) ,
-        sg.Column(catalogheView(), size=(800, 500), background_color='#222E50', key='CENTER-catalogheView',expand_y=True,expand_x=True,visible=False),
-        sg.Column(maintenanceView(), size=(800, 500), background_color='#222E50', key='CENTER-maintenanceView',expand_y=True,expand_x=True,visible=False) ,
-        sg.Column(sellBooksView(), size=(800, 500), background_color='#222E50', key='CENTER-sellBooksView',expand_y=True,expand_x=True,visible=False) ,
-        sg.Column(sellsView(), size=(800, 500), background_color='#222E50', key='CENTER-sellsView',expand_y=True,expand_x=True,visible=False),
-        sg.Column(stadisticsView(), size=(800, 500), background_color='#222E50', key='CENTER-stadisticsView',expand_y=True,expand_x=True,visible=False) 
+        sg.Column(left_layout, element_justification='left',vertical_scroll_only=True),
+        sg.Column(welcomeView(), size=(800, 500), background_color='#222E50', key='CENTER-welcomeView',element_justification='center',vertical_scroll_only=True,visible=True),
+        sg.Column(addBookView(), size=(800, 500), background_color='#222E50', key='CENTER-addBookView',vertical_scroll_only=True,visible=False),
+        sg.Column(searchView(), size=(800, 500), background_color='#222E50', key='CENTER-searchView',vertical_scroll_only=True,visible=False) ,
+        sg.Column(catalogheView(), size=(800, 500), background_color='#222E50', key='CENTER-catalogheView',vertical_scroll_only=True,visible=False),
+        sg.Column(maintenanceView(), size=(800, 500), background_color='#222E50', key='CENTER-maintenanceView',vertical_scroll_only=True,visible=False) ,
+        sg.Column(sellBooksView(), size=(800, 500), background_color='#222E50', key='CENTER-sellBooksView',vertical_scroll_only=True,visible=False) ,
+        sg.Column(sellsView(), size=(800, 500), background_color='#222E50', key='CENTER-sellsView',vertical_scroll_only=True,visible=False),
+        sg.Column(stadisticsView(), size=(800, 500), background_color='#222E50', key='CENTER-stadisticsView',vertical_scroll_only=True  ,visible=False) 
     ]
 ]
     return layout
@@ -116,13 +156,20 @@ def main():
         event, values = window.read()
         if (event == None or event == 'exit') :
             break
-        if event == 'return':
+        elif event == 'return':
             window[activeView].update(visible=False)
             window[f'CENTER-welcomeView'].update(visible=True)
+<<<<<<< HEAD
         if event == 'addBook':
             addBook(values)
         if event in no_view_events:
+=======
+        elif event == 'addBook':
+            addBook(window,values)
+        elif event in no_view_events:
+>>>>>>> ik
             continue
+      
         else :            
             window[f'CENTER-welcomeView'].update(visible=False)
             updateCenterView (window, event, activeView)  
