@@ -1,7 +1,10 @@
-
 import PySimpleGUI as sg
+import os
+
+image_dir = os.path.dirname(__file__)
 def stadisticsView():
     layout = [
-        [sg.Text("Vista para VER ESTADÍSTICAS libro",font='Italic 30',expand_y=True,expand_x=True,justification='center')]
+        [sg.Text("Vista para VER ESTADÍSTICAS libro",font='Italic 30',justification='center',pad=((200,200),(0,0)))],
+          [sg.Image(filename=os.path.join(image_dir,'..','images','in_building.png'),pad=((250,250),(100,100)))]
     ]
     return layout

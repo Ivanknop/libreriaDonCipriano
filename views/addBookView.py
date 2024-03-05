@@ -1,5 +1,6 @@
 import PySimpleGUI as sg
 import datetime
+
 def addBookView():
     left_layout = [
         [sg.Text('Título',font='Italic 10',key='title')],
@@ -12,8 +13,6 @@ def addBookView():
         [sg.InputText(default_text='Propio',font='Italic 10',key='newSupplier')],  
         [sg.Text('Precio de Compra',font='Italic 10',key='purchaseValue')],
         [sg.InputText(default_text=0,font='Italic 10',key='newPurchaseValue')],
-        [sg.Text('Fecha Compra',font='Italic 10',key='purchaseDate')],
-        [sg.InputText(default_text=datetime.datetime.now(),font='Italic 10',key='newPurchaseDate')],
         [sg.Text('Porcentaje',font='Italic 10',key='percentage')],
         [sg.InputText(default_text=100,font='Italic 10',key='newPercentage')]
     ]
@@ -28,15 +27,13 @@ def addBookView():
         [sg.InputText(default_text=1,font='Italic 10',key='newCount')],
         [sg.Text('Pecio de Venta',font='Italic 10',key='saleValue')],
         [sg.InputText(default_text=0,font='Italic 10',key='newSaleValue',enable_events=True)],
-        [sg.Text('Fecha Venta',font='Italic 10',key='saleDate')],
-        [sg.InputText('',font='Italic 10',key='newSaleDate',do_not_clear=False)],
         [sg.Text('Notas',font='Italic 10',key='notes')], 
         [sg.InputText(default_text='',font='Italic 10',key='newNotes')],
         [sg.Button('Agregar', font='Italic 8', size=(10, 2), key='addBook')]
         
     ]
     layout = [ [  
-        sg.Column(left_layout, element_justification='left',expand_y=True,expand_x=True,key='leftValues'),
-        sg.Column(right_layout,  element_justification='right',expand_y=True,expand_x=True),  
+        sg.Column(left_layout, element_justification='left',key='leftValues'),
+        sg.Column(right_layout,  element_justification='right'),  
     ]]
     return layout
