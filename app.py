@@ -74,31 +74,7 @@ def addBook(values):
     else:
         sg.popup_error(f'El dato {tag} debe ser un número.')
    
-def addBook(windows,values):
-    purchase_date = datetime.date.today()
-    rev_date=datetime.date(1917,11,7)
-    valid_values,tag =validate_values(values)
-    if valid_values:
-        book_values={'title':values['newTitle'],
-                 'author':values['newAuthor'],
-                 'subTitle':values['newSubTitle'],
-                 'photo':values['newTitle'],
-                 'percentage':values['newPercentage'],
-                 'notes':values['newNotes'],
-                 'purchaseDate':purchase_date,
-                 'saleDate':rev_date,
-                 'count':values['newCount'],
-                 'editorial':values['newEditorial'],
-                 'supplier':values['newSupplier'],
-                 'category':values['newCategory'],
-                 'purchaseValue':values['newPurchaseValue'],
-                 'saleValue':values['newSaleValue'],
-                 'year':values['newYear']}
-        book = Book(book_values)
-        print (book)
->>>>>>> ik
-    else:
-        sg.popup_error(f'El dato {tag} debe ser un número.')
+
 
 def get_book(book_id=None, title=None, author=None, category=None):
     """
@@ -159,17 +135,10 @@ def main():
         elif event == 'return':
             window[activeView].update(visible=False)
             window[f'CENTER-welcomeView'].update(visible=True)
-<<<<<<< HEAD
         if event == 'addBook':
             addBook(values)
         if event in no_view_events:
-=======
-        elif event == 'addBook':
-            addBook(window,values)
-        elif event in no_view_events:
->>>>>>> ik
-            continue
-      
+            continue   
         else :            
             window[f'CENTER-welcomeView'].update(visible=False)
             updateCenterView (window, event, activeView)  
