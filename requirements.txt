@@ -1,0 +1,4 @@
+sqlalchemy==1.4.32
+PyPDF2==3.0.1
+reportlab==4.0.9
+PySimpleGUI==4.59.0
