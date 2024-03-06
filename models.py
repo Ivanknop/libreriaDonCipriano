@@ -2,6 +2,12 @@ import sqlalchemy
 from sqlalchemy import  Column, Integer, String, Date, Float
 from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
+import PyPDF2 as pdf
+from PyPDF2 import PdfReader
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from reportlab.lib import colors
+import re
 
 # Crear el motor (engine) de la base de datos
 engine = sqlalchemy.create_engine("sqlite:///don_cipriano.db")
@@ -27,7 +33,7 @@ class Book(base):
     percentage = Column(Float)
     notes = Column(String)
     purchasedate = Column(Date)
-    saledate = Column(Date)
+    saledate = Column(Date, nullable=True) 
     photo = Column(String)
 
     # Métodos getters para los atributos
@@ -114,7 +120,6 @@ def get_books(id=None, title=None, author=None, category=None):
             print(f"Error al obtener libros: {e}")
             return []
 
-
 def update_book(book_id, updated_values):
     """
     Actualiza un libro en la base de datos.
@@ -166,8 +171,73 @@ def delete_book_by_title(title):
             print(f"Error al eliminar el libro: {e}")
 
 
-create_schema()
+def show_all_books():
+    """Muestra todos los libros de la base de datos."""
+    # Recupera todos los libros de la base de datos
+    return get_books()
+
+    
+def fill_database_from_pdf(file_path):
+    try:
+        with open(file_path, 'rb') as file:
+            reader = PdfReader(file)  # Usa PdfReader en lugar de PdfFileReader
+            # Recorrer cada página del PDF
+            for page_num in range(len(reader.pages)):
+                page = reader.pages[page_num]
+                # Leer el texto de la página y procesar los datos
+                text = page.extract_text()
+
+                # Patrón para encontrar líneas que contienen información de libros
+                pattern = r'\[(.*?)\]\s*\((.*?)\)\s*(.*?)\n'
+                matches = re.findall(pattern, text)
+
+                # Procesar cada coincidencia encontrada
+                for match in matches:
+                    title, author, category = match
+                    # Insertar el libro en la base de datos
+                    insert_book(title=title.strip(), author=author.strip(), category=category.strip())
+
+        print("Base de datos actualizada desde el archivo PDF exitosamente.")
+
+    except Exception as e:
+        print(f"Error al llenar la base de datos desde el archivo PDF: {e}")
+
+
+def database_to_pdf():
+    # Obtener los libros de la base de datos
+    books = show_all_books()
+
+    # Crear un nuevo documento PDF
+    pdf_filename = "books.pdf"
+    pdf_document = SimpleDocTemplate(pdf_filename, pagesize=letter)
+
+    # Crear una lista para almacenar los datos de los libros
+    data = [['ID', 'Title', 'Author', 'Category']]
+
+    # Agregar los datos de los libros a la lista
+    for book in books:
+        data.append([book.id, book.title, book.author, book.category])
+
+    # Crear una tabla con los datos de los libros
+    table = Table(data)
+
+    # Estilo de la tabla
+    style = TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                        ('GRID', (0, 0), (-1, -1), 1, colors.black)])
+
+    table.setStyle(style)
+
+    # Agregar la tabla al documento PDF
+    pdf_document.build([table])
+
+    print(f"PDF generado correctamente: {pdf_filename}")
+
+#create_schema()
 
 # drop_schema()
-
 
