@@ -75,16 +75,41 @@ def addBook(values):
         sg.popup_error(f'El dato {tag} debe ser un número.')
    
 
+def search_books(values, window):
+    # Obtener los valores de los campos de búsqueda
+    title = values.get('-TITLE-', None)
+    author = values.get('-AUTHOR-', None)
+    category = values.get('-CATEGORY-', None)
 
-def get_book(book_id=None, title=None, author=None, category=None):
-    """
-    Obtener libros de la base de datos basado en filtros opcionales.
+    # Realizar la búsqueda si al menos uno de los campos está lleno
+    if title or author or category:
+        # Aquí es donde realizarías la búsqueda en la base de datos
+        # Por ahora, simplemente mostraremos un mensaje con los valores de búsqueda
+        sg.popup(f'Título: {title}, Autor: {author}, Categoría: {category}')
+    else:
+        sg.popup("Por favor, ingresa al menos un criterio de búsqueda.")
 
-    """
-    # Llamar a la función get_books desde models.py con los filtros proporcionados
-    books = get_books(id=book_id, title=title, author=author, category=category)
-    return books
+def show_all_books():
+    """Recupera todos los libros de la base de datos."""
+    return get_books()
 
+def show_catalog_window(books):
+    if books:
+        layout_catalog = [
+            [sg.Text('Catálogo de Libros')],
+            [sg.Table(values=[[book.id, book.title, book.author, book.category] for book in books],
+                      headings=['ID', 'Título', 'Autor', 'Categoría'],
+                      auto_size_columns=True,
+                      display_row_numbers=False,
+                      col_widths=15,
+                      justification='left')],
+            [sg.Button('Cerrar')]
+        ]
+        window_catalog = sg.Window('Catálogo de Libros', layout_catalog)
+        event, values = window_catalog.read()
+        window_catalog.close()
+    else:
+        sg.popup('No hay libros en el catálogo.')
 
 def updateCenterView(window,event,activeView):
     window[activeView].update(visible=False)
@@ -117,31 +142,62 @@ def initialView():
         sg.Column(sellBooksView(), size=(800, 500), background_color='#222E50', key='CENTER-sellBooksView',vertical_scroll_only=True,visible=False) ,
         sg.Column(sellsView(), size=(800, 500), background_color='#222E50', key='CENTER-sellsView',vertical_scroll_only=True,visible=False),
         sg.Column(stadisticsView(), size=(800, 500), background_color='#222E50', key='CENTER-stadisticsView',vertical_scroll_only=True  ,visible=False) 
+
     ]
 ]
     return layout
 
 def main():
-    theme() 
-    window = sg.Window ('Librería Don Cipriano',initialView(), element_justification='center',resizable=True)
-    window.Finalize()
-    
+    theme()  
+    layout_search = [
+        [sg.Text('Título'), sg.InputText(key='-TITLE-')],
+        [sg.Text('Autor'), sg.InputText(key='-AUTHOR-')],
+        [sg.Text('Categoría'), sg.InputText(key='-CATEGORY-')],
+        [sg.Button('Buscar')]
+    ]
+
+    window_main = sg.Window('Librería Don Cipriano', initialView(), element_justification='center', resizable=True)
+    window_main.finalize()
+
     activeView = 'CENTER-welcomeView'
-    no_view_events = ['newSaleValue','addBook','return']
+    no_view_events = ['newSaleValue', 'addBook', 'return']
+
     while True:
-        event, values = window.read()
-        if (event == None or event == 'exit') :
+        event, values = window_main.read()
+        if event == sg.WINDOW_CLOSED or event == 'exit':
             break
         elif event == 'return':
-            window[activeView].update(visible=False)
-            window[f'CENTER-welcomeView'].update(visible=True)
-        if event == 'addBook':
-            addBook(values)
-        if event in no_view_events:
-            continue   
-        else :            
-            window[f'CENTER-welcomeView'].update(visible=False)
-            updateCenterView (window, event, activeView)  
-            activeView = f'CENTER-{event}'      
-    window.Close()
-main()
+            window_main[activeView].update(visible=False)
+            window_main['CENTER-welcomeView'].update(visible=True)
+        elif event == 'addBook':
+            addBook(values)  
+        elif event == 'searchView':
+            layout_search = [
+                [sg.Text('Título'), sg.InputText(key='-TITLE-')],
+                [sg.Text('Autor'), sg.InputText(key='-AUTHOR-')],
+                [sg.Text('Categoría'), sg.InputText(key='-CATEGORY-')],
+                [sg.Button('Buscar')]
+            ]
+            window_search = sg.Window('Búsqueda', layout_search)
+            while True:
+                event_search, values_search = window_search.read()
+                if event_search == sg.WINDOW_CLOSED:
+                    break
+                elif event_search == 'Buscar':
+                    search_books(values_search, window_main)
+            window_search.close()
+        elif event == 'catalogheView':
+            books = show_all_books()
+            # Mostrar la ventana del catálogo con los libros obtenidos
+            show_catalog_window(books)
+        elif event in no_view_events:
+            continue
+        else:
+            window_main[activeView].update(visible=False)
+            updateCenterView(window_main, event, activeView)
+            activeView = f'CENTER-{event}'
+
+    window_main.close()
+
+if __name__ == "__main__":
+    main()
