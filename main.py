@@ -4,7 +4,7 @@ from app import *
 
 def main():
     theme()
-    #login()
+    login()
     systemMain()
 
 if __name__ == "__main__":

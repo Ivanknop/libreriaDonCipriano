@@ -16,7 +16,7 @@ def login():
         [sg.Text('Ingrese Usuario',font='Italic 10',key='user',size=(20,1))],
         [sg.InputText('',font='Italic 10',key='user_key',do_not_clear=False,size=(10,2))],
         [sg.Text('Ingrese Password',font='Italic 10',key='pass',size=(20,1))],
-        [sg.InputText('',font='Italic 10',key='pass_key',do_not_clear=False,size=(10,2))],
+        [sg.InputText('',font='Italic 10',key='pass_key',do_not_clear=False,size=(10,2),password_char='*')],
         [sg.Button('Ingresar',key='login')]
            ]
     window_main = sg.Window('Librería Don Cipriano', layout, element_justification='center', resizable=True)
