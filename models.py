@@ -2,8 +2,8 @@ import sqlalchemy
 from sqlalchemy import  Column, Integer, String, Date, Float
 from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
-import PyPDF2 as pdf
-from PyPDF2 import PdfReader
+#import PyPDF2 as pdf
+#from PyPDF2 import PdfReader
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from reportlab.lib import colors

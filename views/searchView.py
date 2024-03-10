@@ -1,10 +1,12 @@
 import PySimpleGUI as sg
 import os
-
+import datetime
 image_dir = os.path.dirname(__file__)
 def searchView():
     layout = [
-        [sg.Text("Vista para BUSCAR libro",font='Italic 30',justification='center',pad=((200,200),(0,0)))],
-          [sg.Image(filename=os.path.join(image_dir,'..','images','in_building.png'),pad=((250,250),(100,100)))]
+                [sg.Text('Título'), sg.InputText(key='-TITLE-')],
+                [sg.Text('Autor'), sg.InputText(key='-AUTHOR-')],
+                [sg.Text('Categoría'), sg.InputText(key='-CATEGORY-')],
+                [sg.Button('Buscar',key='search_book')]
     ]
     return layout
